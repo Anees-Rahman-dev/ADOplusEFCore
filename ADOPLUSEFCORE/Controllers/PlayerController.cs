@@ -1,4 +1,5 @@
-﻿using ADOPLUSEFCORE.models;
+﻿using ADOPLUSEFCORE.Data;
+using ADOPLUSEFCORE.models;
 using ADOPLUSEFCORE.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,11 +15,26 @@ namespace ADOPLUSEFCORE.Controllers
         {
             _Service = service;
         }
+        private readonly AppDbContext _context;
+        public PlayerController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpPost]
         public Players AddPlayer(Players players)
         {
             return _Service.AddPlayers(players);
+        }
+        [HttpPost("EF")]
+
+        public async Task<IActionResult> AddPLAyers()
+        {
+            
+        }
+        public Task<IActionResult> GetPlayers()
+        {
+
         }
     }
 }

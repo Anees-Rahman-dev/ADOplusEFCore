@@ -1,0 +1,6 @@
+@ADOPLUSEFCORE_HostAddress = http://localhost:5206
+
+GET {{ADOPLUSEFCORE_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

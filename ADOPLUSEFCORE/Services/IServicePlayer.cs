@@ -15,6 +15,6 @@ namespace ADOPLUSEFCORE.Services
 
         Players? GetPlayerById(int id);
 
-        
+        DataSet GetAllPlayersAndSave();
     }
 }

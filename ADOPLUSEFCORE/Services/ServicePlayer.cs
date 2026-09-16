@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System.Data;
 
 namespace ADOPLUSEFCORE.Services
 {
@@ -126,6 +127,27 @@ namespace ADOPLUSEFCORE.Services
 
         }
 
+        public DataSet GetAllPlayersAndSave()
+        {
 
+            
+            
+
+            DataSet SET = new DataSet();
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+
+            string Q = "SELECT Id, Name, Team FROM Players";
+
+            using SqlDataAdapter adapter = new SqlDataAdapter(Q,connection);
+
+            adapter.Fill(SET,"Players");
+
+            DataTable table = SET.Tables["Players"]!;
+
+
+            return SET;
+
+        }
     }
 }

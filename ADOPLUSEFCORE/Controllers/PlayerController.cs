@@ -4,6 +4,7 @@ using ADOPLUSEFCORE.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Razor.Hosting;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 
 namespace ADOPLUSEFCORE.Controllers
@@ -20,8 +21,8 @@ namespace ADOPLUSEFCORE.Controllers
             _Service = service;
             _context = context;
         }
-        
-        
+
+
         [HttpPost]
         public Players AddPlayer(Players players)
         {
@@ -39,14 +40,14 @@ namespace ADOPLUSEFCORE.Controllers
         }
 
 
-        [HttpGet] 
+        [HttpGet]
         public List<Players> GetPlayers()
         {
             return _Service.GetPlayers();
 
         }
 
-        [HttpGet("EF")  ]
+        [HttpGet("EF")]
         public async Task<IActionResult> GetAllPlayers()
         {
             var Playerss = await _context.Players.ToListAsync();
@@ -57,7 +58,7 @@ namespace ADOPLUSEFCORE.Controllers
         [HttpDelete]
         public void DeletePlayer(int id)
         {
-             _Service.DeletePlayer(id);
+            _Service.DeletePlayer(id);
         }
 
         [HttpDelete("{id}/EF")]
@@ -84,7 +85,7 @@ namespace ADOPLUSEFCORE.Controllers
         }
 
         [HttpPut("EF")]
-        public async Task<IActionResult> UpdatePLayer(int Id,Players players)
+        public async Task<IActionResult> UpdatePLayer(int Id, Players players)
         {
             var player = await _context.Players.FindAsync(Id);
 
@@ -96,7 +97,7 @@ namespace ADOPLUSEFCORE.Controllers
             {
                 player.Name = players.Name;
                 player.Team = players.Team;
-                
+
             }
             await _context.SaveChangesAsync();
             return Ok(players);
@@ -122,6 +123,30 @@ namespace ADOPLUSEFCORE.Controllers
             {
                 return Ok(player);
             }
+        }
+
+        [HttpGet("DatasetGet")]
+        public IActionResult GetAllPlayersAndSave()
+        {
+            DataSet Set = _Service.GetAllPlayersAndSave();
+
+            DataTable table = Set.Tables["Players"]!;
+
+            List<Players> playersList = new List<Players>();
+
+            foreach(DataRow row in table.Rows)
+            {
+                playersList.Add(new Players
+                {
+
+                    Id = Convert.ToInt32(row["Id"]),
+                    Name = row["Name"].ToString()!,
+                    Team = row["Team"].ToString()!
+                });
+
+            }
+            return Ok(playersList);
+
         }
     }
 }

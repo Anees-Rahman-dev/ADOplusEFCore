@@ -169,5 +169,42 @@ namespace ADOPLUSEFCORE.Services
             return view.ToTable();
 
         }
+
+        public DataSet InsertingPlayers(Players players)
+        {
+            DataSet Set = new DataSet();
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+
+            string Q = "SELECT Id, Name, Team FROM Players";
+
+            using SqlDataAdapter adapter = new SqlDataAdapter(Q,connection);
+
+            adapter.Fill(Set,"Players");
+
+            adapter.InsertCommand = new SqlCommand("INSERT INTO Players (Name,Team) VALUES(@Name, @Team)",connection);
+
+            adapter.InsertCommand.Parameters.Add("@Name",SqlDbType.VarChar,100,"Name");
+            adapter.InsertCommand.Parameters.Add("@Team",SqlDbType.VarChar,100,"Team");
+
+            DataTable table = Set.Tables["Players"]!;
+
+            DataRow row = table.NewRow();
+
+            row["Name"] = players.Name;
+            row["Team"] = players.Team;
+
+            table.Rows.Add(row);
+            
+            adapter.Update(Set,"Players");
+
+            Set.Clear();
+
+            adapter.Fill(Set, "Players");
+
+            
+
+            return Set;
+        }
     }
 }

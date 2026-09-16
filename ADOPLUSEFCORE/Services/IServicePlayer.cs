@@ -16,7 +16,7 @@ namespace ADOPLUSEFCORE.Services
         Players? GetPlayerById(int id);
         DataSet GetAllPlayersAndSave();
         DataTable GetPlayersWhoseTeam();
-
+        DataSet InsertingPlayers(Players players);
 
 
         

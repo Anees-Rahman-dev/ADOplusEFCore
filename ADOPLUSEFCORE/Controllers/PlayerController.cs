@@ -174,8 +174,29 @@ namespace ADOPLUSEFCORE.Controllers
             }
 
             return Ok(players);
-
-            
         }
+
+        [HttpPost("DataSetInserting")]
+
+        public IActionResult DataSetInserting(Players players)
+        {
+            List<Players> players1 = new List<Players>();
+
+            DataSet set = _Service.InsertingPlayers(players);
+
+            DataTable table = set.Tables["Players"]!;
+
+            foreach (DataRow row in table.Rows)
+            {
+                players1.Add(new Players
+                {
+                    Id = Convert.ToInt32(row["Id"]),
+                    Name = row["Name"].ToString()!,
+                    Team = row["Team"].ToString()!
+                });
+            }
+            return Ok(players1);
+        }
+
     }
 }

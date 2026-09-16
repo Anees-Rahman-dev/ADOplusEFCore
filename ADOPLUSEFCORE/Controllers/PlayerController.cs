@@ -148,5 +148,34 @@ namespace ADOPLUSEFCORE.Controllers
             return Ok(playersList);
 
         }
+
+        [HttpGet("DataSetFiltering")]
+
+        public IActionResult GetPlayersWhoseTeam()
+        {
+            DataTable table = _Service.GetPlayersWhoseTeam();
+
+            DataView view = new DataView(table);
+
+            view.RowFilter = "Team = 'Ac Milan'";
+
+            List<Players> players = new List<Players>();
+
+            foreach (DataRowView v in view)
+            {
+
+                players.Add(new Players
+                {
+                    Id = Convert.ToInt32(v["Id"]),
+                    Name = v["Name"].ToString()!,
+                    Team = v["Team"].ToString()!
+                });
+
+            }
+
+            return Ok(players);
+
+            
+        }
     }
 }

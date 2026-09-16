@@ -14,7 +14,11 @@ namespace ADOPLUSEFCORE.Services
         Players UpdatePlayer(int id,Players player);
 
         Players? GetPlayerById(int id);
-
         DataSet GetAllPlayersAndSave();
+        DataTable GetPlayersWhoseTeam();
+
+
+
+        
     }
 }

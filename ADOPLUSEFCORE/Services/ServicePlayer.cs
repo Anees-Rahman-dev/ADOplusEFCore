@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using System.Data;
+using System.Runtime.Intrinsics.X86;
 
 namespace ADOPLUSEFCORE.Services
 {
@@ -130,8 +131,6 @@ namespace ADOPLUSEFCORE.Services
         public DataSet GetAllPlayersAndSave()
         {
 
-            
-            
 
             DataSet SET = new DataSet();
 
@@ -145,8 +144,29 @@ namespace ADOPLUSEFCORE.Services
 
             DataTable table = SET.Tables["Players"]!;
 
-
             return SET;
+
+        }
+
+        public DataTable GetPlayersWhoseTeam()
+        {
+            DataSet Set = new DataSet();
+
+            using SqlConnection connection = new SqlConnection(_connectionString);
+
+            string Q = "SELECT Id, Name, Team FROM Players";
+
+            using SqlDataAdapter adapter = new SqlDataAdapter(Q,connection);
+
+            adapter.Fill(Set, "Players");
+
+            DataTable table = Set.Tables["Players"]!;
+
+            DataView view = new DataView(table);
+
+            view.RowFilter = "Team = 'Ac Milan'";
+
+            return view.ToTable();
 
         }
     }

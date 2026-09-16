@@ -12,3 +12,4 @@ namespace ADOPLUSEFCORE.Data
         public DbSet<Players> Players { get; set; }
     }
 }
+

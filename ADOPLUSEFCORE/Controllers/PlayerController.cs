@@ -2,6 +2,9 @@
 using ADOPLUSEFCORE.models;
 using ADOPLUSEFCORE.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Razor.Hosting;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace ADOPLUSEFCORE.Controllers
 {
@@ -10,17 +13,15 @@ namespace ADOPLUSEFCORE.Controllers
     public class PlayerController : ControllerBase
     {
         private readonly IServicePlayer _Service;
+        private readonly AppDbContext _context;
 
-        public PlayerController(IServicePlayer service)
+        public PlayerController(IServicePlayer service, AppDbContext context)
         {
             _Service = service;
-        }
-        private readonly AppDbContext _context;
-        public PlayerController(AppDbContext context)
-        {
             _context = context;
         }
-
+        
+        
         [HttpPost]
         public Players AddPlayer(Players players)
         {
@@ -28,13 +29,99 @@ namespace ADOPLUSEFCORE.Controllers
         }
         [HttpPost("EF")]
 
-        public async Task<IActionResult> AddPLAyers()
+        public async Task<IActionResult> AddPLAyers(Players players)
         {
-            
-        }
-        public Task<IActionResult> GetPlayers()
-        {
+            _context.Players.Add(players);
 
+            await _context.SaveChangesAsync();
+
+            return Ok(players);
+        }
+
+
+        [HttpGet] 
+        public List<Players> GetPlayers()
+        {
+            return _Service.GetPlayers();
+
+        }
+
+        [HttpGet("EF")  ]
+        public async Task<IActionResult> GetAllPlayers()
+        {
+            var Playerss = await _context.Players.ToListAsync();
+
+            return Ok(Playerss);
+        }
+
+        [HttpDelete]
+        public void DeletePlayer(int id)
+        {
+             _Service.DeletePlayer(id);
+        }
+
+        [HttpDelete("{id}/EF")]
+        public async Task<IActionResult> DeletePlayerr(int id)
+        {
+            var player = await _context.Players.FindAsync(id);
+
+            if (player == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                _context.Players.Remove(player);
+            }
+            await _context.SaveChangesAsync();
+            return Ok("Student Has Deleted");
+        }
+
+        [HttpPut]
+        public Players UpdatePlayer(int id, Players players)
+        {
+            return _Service.UpdatePlayer(id, players);
+        }
+
+        [HttpPut("EF")]
+        public async Task<IActionResult> UpdatePLayer(int Id,Players players)
+        {
+            var player = await _context.Players.FindAsync(Id);
+
+            if (player == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                player.Name = players.Name;
+                player.Team = players.Team;
+                
+            }
+            await _context.SaveChangesAsync();
+            return Ok(players);
+        }
+
+        [HttpGet("{id}")]
+        public Players? GetPlayerById(int id)
+        {
+            return _Service.GetPlayerById(id);
+        }
+
+        [HttpGet("{id}/EF")]
+
+        public async Task<IActionResult> GetplayerById(int id)
+        {
+            var player = await _context.Players.FindAsync(id);
+
+            if (player == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return Ok(player);
+            }
         }
     }
 }
